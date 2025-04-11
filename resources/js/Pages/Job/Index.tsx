@@ -12,7 +12,6 @@ import { JobPost } from '@/types/models/jobPost';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeftIcon } from 'lucide-react';
 import moment from 'moment-timezone';
-import Status from '../JobPosts/components/Status';
 import { JobNotFound } from './JobNotFound';
 
 type Props = {
@@ -41,12 +40,6 @@ const JobIndex = ({ jobPost }: Props) => {
                             </div>
                             <Card className="transition-all duration-300">
                                 <CardHeader className="space-y-0">
-                                    <div className="mb-2">
-                                        <Status
-                                            jobId={jobPost.id}
-                                            status={jobPost.status}
-                                        />
-                                    </div>
                                     <CardTitle className="text-lg font-bold text-blue-800">
                                         <h1>{jobPost.title}</h1>
                                     </CardTitle>
