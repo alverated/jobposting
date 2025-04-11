@@ -70,7 +70,7 @@ class JobPostController extends Controller
     {
         $jobPost->delete();
 
-        return back()->with('success', 'Job post deleted successfully');
+        return redirect()->route('job-posts.index')->with('success', 'Job post deleted successfully');
     }
 
     public function updateStatus(JobPost $jobPost, JobPostStatus $jobPostStatus): RedirectResponse
