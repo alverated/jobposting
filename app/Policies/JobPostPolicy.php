@@ -21,7 +21,10 @@ class JobPostPolicy
      */
     public function view(User $user, JobPost $jobPost): bool
     {
-        return $user->id === $jobPost->user_id || $user->type === UserType::MODERATOR;
+        /** @var \App\Enums\UserType */
+        $userType = $user->type;
+
+        return $user->id === $jobPost->user_id || $userType === UserType::MODERATOR;
     }
 
     /**
@@ -50,7 +53,10 @@ class JobPostPolicy
 
     public function updateStatus(User $user, JobPost $jobPost): bool
     {
-        return $user->type === UserType::MODERATOR;
+        /** @var \App\Enums\UserType */
+        $userType = $user->type;
+
+        return $userType === UserType::MODERATOR;
     }
 
     /**

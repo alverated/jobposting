@@ -8,6 +8,7 @@ use App\Http\Requests\StoreJobPostRequest;
 use App\Http\Requests\UpdateJobPostRequest;
 use App\Models\JobPost;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,11 +18,14 @@ class JobPostController extends Controller
 
     public function index(): Response
     {
-        $user = auth()->user();
+        /** @var \App\Models\User */
+        $user = Auth::user();
 
-        $jobPosts = $user->type === UserType::MODERATOR
-            ? JobPost::with('user')
-                ->where('status', JobPostStatus::PENDING)
+        /** @var UserType $userType */
+        $userType = $user->type;
+
+        $jobPosts = $userType === UserType::MODERATOR
+            ? JobPost::with('user')->where('status', JobPostStatus::PENDING)
                 ->orderBy('created_at', 'desc')
                 ->paginate($this->perPage)
             : $user->jobPosts()
@@ -50,7 +54,8 @@ class JobPostController extends Controller
     {
         $validated = $request->validated();
 
-        $user = $request->user();
+        /** @var \App\Models\User */
+        $user = Auth::user();
 
         $user->jobPosts()->create($validated);
 

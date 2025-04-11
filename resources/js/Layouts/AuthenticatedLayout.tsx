@@ -164,17 +164,13 @@ export default function Authenticated({ header, children }: Props) {
                                 >
                                     Dashboard
                                 </ResponsiveNavLink>
-                            </div>
-
-                            <div className="space-y-1 pb-3 pt-2">
                                 <ResponsiveNavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('job-posts.index')}
+                                    active={route().current('job-posts.*')}
                                 >
                                     Job Posts
                                 </ResponsiveNavLink>
                             </div>
-
                             <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
                                 <div className="px-4">
                                     <div className="text-base font-medium text-gray-800 dark:text-gray-200">

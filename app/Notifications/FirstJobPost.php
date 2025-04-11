@@ -40,9 +40,12 @@ class FirstJobPost extends Notification
     {
         $actionUrl = route('job-posts.show', $this->jobPost->id);
 
+        /** @var \App\Models\User */
+        $user = $this->jobPost->user;
+
         return [
             'title' => 'Job Post Notification',
-            'message' => "A new job post has been created by {$this->jobPost->user->name}. Please review and approve it.",
+            'message' => "A new job post has been created by {$user->name}. Please review and approve it.",
             'job_title' => $this->jobPost->title,
             'description' => Str::limit(strip_tags($this->jobPost->description), 100),
             'action_url' => $actionUrl,

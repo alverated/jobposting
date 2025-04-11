@@ -46,10 +46,8 @@ class ExternalJobService
                         'is_external' => true,
                     ];
 
-
-                    return new JobPostResource($formatted)->toArray(request());
+                    return (new JobPostResource($formatted))->toArray(request());
                 })->toArray();
-
             } catch (Exception $e) {
                 $jobPosts = [];
             }

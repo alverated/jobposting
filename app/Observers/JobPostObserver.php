@@ -14,8 +14,11 @@ class JobPostObserver
      */
     public function created(JobPost $jobPost): void
     {
+        /** @var \App\Models\User */
+        $user = $jobPost->user;
+
         // if the job post is the first one, notify moderators
-        if ($jobPost->user->jobPosts()->count() === 1) {
+        if ($user->jobPosts()->count() === 1) {
             $moderators = User::where('type', UserType::MODERATOR)->get();
             foreach ($moderators as $moderator) {
                 $moderator->notify(new FirstJobPost($jobPost));

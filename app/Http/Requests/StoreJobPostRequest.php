@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\UserType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreJobPostRequest extends FormRequest
 {
@@ -12,7 +13,13 @@ class StoreJobPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->type === UserType::USER;
+        /** @var \App\Models\User */
+        $user = Auth::user();
+
+        /** @var \App\Enums\UserType */
+        $userType = $user->type;
+
+        return $userType === UserType::USER;
     }
 
     /**

@@ -30,7 +30,6 @@ export default [
                 ...globals.browser,
                 ...globals.node,
             },
-
             parser: tsParser,
             ecmaVersion: 'latest',
             sourceType: 'module',

@@ -1,0 +1,68 @@
+#!/bin/sh
+docker_container=laravel.test
+
+if docker ps --filter "name=$docker_container" --filter "status=running" -q >/dev/null 2>&1; then
+    app_runs_in_docker=1
+else
+    app_runs_in_docker=0
+fi
+
+run_command_in_sail() {
+    ./vendor/bin/sail exec -T $docker_container $1
+}
+
+run_js_checks() {
+    files=$1
+    echo "Running ESLint..."
+    js_cmd_1="npx eslint $files --fix"
+
+    if [ $app_runs_in_docker -eq 1 ]; then
+        run_command_in_sail "$js_cmd_1"
+    else
+        $js_cmd_1
+    fi
+
+    echo "Running Prettier..."
+    js_cmd_2="npx prettier $files --check --write"
+
+    if [ $app_runs_in_docker -eq 1 ]; then
+        run_command_in_sail "$js_cmd_2"
+    else
+        $js_cmd_2
+    fi
+}
+
+run_php_checks() {
+    files=$1
+    echo "Running Laravel Pint..."
+    php_cmd_1="vendor/bin/pint $files"
+
+    if [ $app_runs_in_docker -eq 1 ]; then
+        run_command_in_sail "$php_cmd_1"
+    else
+        $php_cmd_1
+    fi
+
+    echo "Running PHPStan..."
+    php_cmd_2="vendor/bin/phpstan analyze $files"
+
+    if [ $app_runs_in_docker -eq 1 ]; then
+        run_command_in_sail "$php_cmd_2"
+    else
+        $php_cmd_2
+    fi
+}
+
+jsfiles=$(git diff --cached --name-only --diff-filter=ACMR -- '*.js' '*.ts' '*.tsx')
+
+if [ -n "$jsfiles" ]; then
+    run_js_checks "$jsfiles"
+    git add $jsfiles
+fi
+
+phpfiles=$(git diff --cached --name-only --diff-filter=ACMR -- '*.php')
+
+if [ -n "$phpfiles" ]; then
+    run_php_checks "$phpfiles"
+    git add $phpfiles
+fi
