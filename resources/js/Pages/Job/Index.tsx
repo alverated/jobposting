@@ -13,6 +13,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowLeftIcon } from 'lucide-react';
 import moment from 'moment-timezone';
 import Status from '../JobPosts/components/Status';
+import { JobNotFound } from './JobNotFound';
 
 type Props = {
     jobPost: JobPost | null;
@@ -20,10 +21,8 @@ type Props = {
 
 const JobIndex = ({ jobPost }: Props) => {
     if (!jobPost) {
-        return <div>Job not found</div>;
+        return <JobNotFound />;
     }
-
-    console.log(jobPost);
 
     return (
         <>
