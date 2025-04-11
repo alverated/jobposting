@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\JobPostStatus;
-use App\Enums\UserType;
 use App\Http\Requests\StoreJobPostRequest;
 use App\Http\Requests\UpdateJobPostRequest;
 use App\Models\JobPost;
+use App\Traits\JobPostTrait;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -14,26 +14,19 @@ use Inertia\Response;
 
 class JobPostController extends Controller
 {
+    use JobPostTrait;
+
     private $perPage = 10;
 
     public function index(): Response
     {
-        /** @var \App\Models\User */
-        $user = Auth::user();
+        $status = $this->validateStatus(request()->input('status'));
 
-        /** @var UserType $userType */
-        $userType = $user->type;
-
-        $jobPosts = $userType === UserType::MODERATOR
-            ? JobPost::with('user')->where('status', JobPostStatus::PENDING)
-                ->orderBy('created_at', 'desc')
-                ->paginate($this->perPage)
-            : $user->jobPosts()
-                ->orderBy('created_at', 'desc')
-                ->paginate($this->perPage);
+        $jobPosts = $this->getJobPosts($status);
 
         return Inertia::render('JobPosts/Index', [
             'jobPosts' => Inertia::merge(fn (): array => $jobPosts->items()),
+            'status' => $status,
 
             // For infinite scrolling
             'currentPage' => $jobPosts->currentPage(),

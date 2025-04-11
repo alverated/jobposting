@@ -2,26 +2,33 @@ import { ConfirmationDialog } from '@/Components/ConfirmationDialog';
 import { Button } from '@/Components/ui/button';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
+import { JobPostStatus, jobPostStatuses } from '@/types/enums/jobPostStatus';
 import { UserType } from '@/types/enums/userTypes';
 import { JobPost } from '@/types/models/jobPost';
 import { Head, router, usePage, WhenVisible } from '@inertiajs/react';
 import { LoaderCircleIcon, PlusIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import Filter from './components/Filter';
 import Form from './components/Form';
 import { JobItems } from './components/JobItems';
 
 type Props = {
     jobPosts: JobPost[];
+    status: JobPostStatus;
     showMore: boolean;
     currentPage: number;
 };
 
 export const JobPostsIndex = ({
     jobPosts = [],
+    status,
     showMore,
     currentPage,
 }: Props) => {
+    const selectedStatus =
+        status !== null ? (jobPostStatuses[Number(status) - 1] ?? null) : null;
+
     const { props } = usePage<PageProps>();
     const { auth } = props;
     const { user } = auth;
@@ -99,6 +106,11 @@ export const JobPostsIndex = ({
                                         <PlusIcon />
                                         Create
                                     </Button>
+                                </div>
+                            )}
+                            {user.type === UserType.MODERATOR && (
+                                <div className="mb-4 flex justify-start">
+                                    <Filter selectedStatus={selectedStatus} />
                                 </div>
                             )}
                             <div className="">
