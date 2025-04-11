@@ -217,7 +217,7 @@ const NotificationDrawer = () => {
                         </div>
                     </SheetHeader>
                     <ScrollArea
-                        className="h-[calc(100dvh-78px)]"
+                        className="h-[calc(100dvh-90px)]"
                         type="scroll"
                         onScrollCapture={handleScroll}
                         ref={scrollAreaRef}
