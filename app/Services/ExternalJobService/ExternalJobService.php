@@ -34,7 +34,10 @@ class ExternalJobService
                 $json = json_encode($xml);
                 $data = json_decode($json, true);
 
-                $jobPosts = collect($data['position'] ?? [])->map(function ($job) {
+                $jobs = $data['position'] ?? [];
+                $jobs = array_is_list($jobs) ? $jobs : [$jobs];
+
+                $jobPosts = collect($jobs)->map(function ($job) {
                     $formatted = [
                         'id' => $job['id'] ? intval($job['id']) : null,
                         'title' => $job['name'] ?? null,
