@@ -34,7 +34,7 @@ trait JobPostTrait
             : $user->jobPosts();
 
         $jobPosts = $query
-            ->when($status, fn ($query, $status) => $query->where('status', $status))
+            ->when($status && $userType === UserType::MODERATOR, fn ($query, $status) => $query->where('status', $status))
             ->orderBy('created_at', 'desc')
             ->paginate($this->perPage);
 
